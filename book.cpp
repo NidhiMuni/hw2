@@ -32,7 +32,6 @@ bool Book::isMatch(std::vector<std::string>& searchTerms) const{
 
 std::string Book::displayString() const{
   std::stringstream display;
-  //display << name_ << "\nAuthor: " << author_ << " ISBN: " << isbn_ << "\n" << price_ << " " << qty_ << " left. " << endl;
   display << name_ << endl;
   display << "Author: " << author_ << " ISBN: " << isbn_ << endl;
   display << price_ << " " << qty_ << " left. " << endl;

@@ -6,13 +6,10 @@
 #include <iostream>
 
 MyDataStore::MyDataStore() : DataStore(){
-  /*products_ = new std::set<Product*>;
-  users_ = new std::set<User*>;
-  keywordMap_ = new std::map<std::string, std::set<Product*>> ; 
-  carts_ = new std::map<std::string, std::vector<Product*>> ;*/
 }
 
 MyDataStore::~MyDataStore(){
+  //deallocate all the new objects created
   std::set<Product*>::iterator it;
   for(it = products_.begin(); it != products_.end(); ++it) {
     delete *it;
@@ -25,7 +22,8 @@ MyDataStore::~MyDataStore(){
 
 void MyDataStore::addProduct(Product* p){  
   std::set<Product*>::iterator it = products_.find(p);
-  if (it == products_.end()) { // if product does not exist
+  if (it == products_.end()) { // if product does not exist...
+    //map it by its keywords
     std::set<std::string> keywords = p->keywords();
     std::set<std::string>::iterator itKey;
     for(itKey = keywords.begin(); itKey != keywords.end(); ++itKey) {
@@ -43,7 +41,7 @@ void MyDataStore::addUser(User* u){
 std::vector<Product*> MyDataStore::search(std::vector<std::string>& terms, int type){
   std::vector<Product*> prods;
 
-  //get all products with those keywords
+  //create a set of all products matching any of the given terms
   std::set<Product*> prodsSet;
   for (size_t i = 0; i < terms.size(); i++){
     std::string term = terms[i];
@@ -54,26 +52,32 @@ std::vector<Product*> MyDataStore::search(std::vector<std::string>& terms, int t
     }
   }
 
-  if (type == 1){
+  if (type == 1){ //OR
      //convert set to vector
     std::set<Product*>::iterator iterVec;
     for(iterVec = prodsSet.begin(); iterVec != prodsSet.end(); ++iterVec){
       prods.push_back(*iterVec);
     }
-    return prods; //OR
+    return prods; 
 
   } else if (type == 0){ //AND
+    //for each product in the set, check if it has ALL the terms
     std::set<Product*>::iterator it;
     for(it = prodsSet.begin(); it != prodsSet.end(); ++it){
+      //get list of keywords for the crrent product
       Product* p = *it;
       std::set<std::string> keywords = p->keywords();
 
+      //convert terms vector to set
       std::set<std::string> termSet;
       for (size_t i = 0; i < terms.size(); i++){
         termSet.insert(terms[i]);
       }
-      std::set<std::string> intersection = setIntersection(keywords, termSet);
 
+      //Get the intersection of the terms and product keywords, then
+      //check that the intersection contains all the terms. This means
+      //that the product contains all the terms.
+      std::set<std::string> intersection = setIntersection(keywords, termSet);
       bool allMatch = true;
       std::set<std::string>::iterator intersectionIt;
       std::set<std::string>::iterator keywordFinder;
@@ -86,8 +90,8 @@ std::vector<Product*> MyDataStore::search(std::vector<std::string>& terms, int t
         }
       }
 
+      //If the product contains all the terms, then it is a search match
       if (allMatch == true){
-        //std::cout << "pushin " << p->getName() << std::endl;
         prods.push_back(p);
       }
     }
@@ -117,6 +121,7 @@ void MyDataStore::addToCart(std::string username, int index, std::vector<Product
   carts_[username] = p;
 }
 
+//Print each item in the cart.
 void MyDataStore::viewCart(std::string username){
   std::vector<Product*> userCart = carts_[username];
   int index = 1;
@@ -141,6 +146,7 @@ void MyDataStore::buyCart(std::string username){
       double price = p->getPrice();
       int qty = p->getQty();
 
+      //If an item is available and within budget, buy
       if (budget-price >= 0.0 && qty >= 1){
         budget = budget - price;
         p->subtractQty(1);
@@ -149,9 +155,11 @@ void MyDataStore::buyCart(std::string username){
     }
   }
 
+  //update the user's credit accordingly 
   users_[username]->deductAmount(initBudget - budget); 
 }
 
+//Used for testing. 
 void MyDataStore::printProducts(){
   std::cout << "Products: "<< std::endl;
   std::set<Product*>::iterator it;

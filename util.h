@@ -14,28 +14,20 @@ std::set<T> setIntersection(std::set<T>& s1, std::set<T>& s2)
 {
   std::set<T> intersectionSet;
   typename std::set<T>::iterator interIt;
-  typename std::set<T>::iterator checkerIt;
 
-  std::set<T> checker;
+  //for each element of s1, insert if it exists n s2
   for (interIt = s1.begin(); interIt != s1.end(); ++interIt) 
   {
-    checker.insert(*interIt);
-  }
-
-  int beforeSize = 0;
-  int afterSize = 0;
-  for (interIt = s2.begin(); interIt != s2.end(); ++interIt) 
-  {
-    beforeSize = checker.size();
-    checker.insert(*interIt);
-    afterSize = checker.size();
-    if (afterSize == beforeSize){
+    typename std::set<T>::iterator it2 = s2.find(*interIt);
+    if (it2 != s2.end()){ //it exists in set 2
       intersectionSet.insert(*interIt);
     }
   }
+  
   return intersectionSet;
 }
 
+//Create a set with all elements from both sets
 template <typename T>
 std::set<T> setUnion(std::set<T>& s1, std::set<T>& s2)
 {

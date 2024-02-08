@@ -24,9 +24,11 @@ std::set<std::string> parseStringToWords(string rawWords)
         ss >> temp;
 
         if (temp.length() >= 2){
+          //array that stores where to split the string
           int split[temp.length()];
           int splitTimes = 0;
 
+          //whatever index has punctuation, it should be split
           for (unsigned int i = 0; i < temp.length(); i++){
             if (ispunct(temp[i])){
               split[splitTimes] = i;
@@ -39,16 +41,20 @@ std::set<std::string> parseStringToWords(string rawWords)
             keywords.insert(temp);
           } else {
 
+            //split at the stored indeces, then add
             string add;
             int prev = 0;
             for(int j = 0; j < splitTimes; j++){
               add = temp.substr(prev, split[j]);
               prev = split[j]+1;
+
               if (add.length() >= 2){
                 add = convToLower(add);
                 keywords.insert(add);
               }
             }
+
+            //add whatever remains after all splitting
             add = temp.substr(prev);
             if (add.length() >= 2){
               add = convToLower(add);
