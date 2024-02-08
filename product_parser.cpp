@@ -11,6 +11,7 @@ using namespace std;
 ProductParser::ProductParser()
 {
 
+
 }
 
 
@@ -130,8 +131,9 @@ std::string ProductBookParser::categoryID()
  */
 Product* ProductBookParser::makeProduct()
 {
-
-
+  Book* b = new Book("book", prodName_, price_, qty_, isbn_, author_);
+  //cout << "made new book " << prodName_ << endl;
+  return b;
 }
 
 
@@ -185,9 +187,8 @@ std::string ProductClothingParser::categoryID()
  */
 Product* ProductClothingParser::makeProduct()
 {
-
-
-
+  Clothing* c = new Clothing("clothing", prodName_, price_, qty_, size_, brand_); 
+  return c;
 }
 
 
@@ -245,6 +246,7 @@ std::string ProductMovieParser::categoryID()
  */
 Product* ProductMovieParser::makeProduct()
 {
-
+  Movie* m = new Movie("movie", prodName_, price_, qty_, genre_, rating_);
+  return m;
 
 }

@@ -9,6 +9,10 @@
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
+#include "mydatastore.h"
+
+#include "book.h"
+#include "movie.h"
 
 using namespace std;
 struct ProdNameSorter {
@@ -25,13 +29,68 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    //MyDataStore m;
+    //Movie* m = new Movie("movie", "prodName_", 12.00, 5, "genre_", "rating_");
+
+
+    /*string name = "bookie";
+    string author = "jk rowling";
+    string isbn = "jergbe";
+    double price = 4.09;
+    int quantity = 6;
+    Book b("hi", name, price, quantity, isbn, author);
+
+    Movie* m = new Movie("movie", "prodName_", 12.00, 5, "genre_", "rating_");
+    cout << "movie price " << m->getPrice() << endl;*/
+    //cout << name + "\nAuthor: " + author + " ISBN: " + isbn + "\n" + price + " " + quantity + " left. " << endl;
+
+    /*
+    Test parseStringtoWords()
+    
+    set<string> test = parseStringToWords("J. I men's shoe I'll");
+    set<string>::iterator it;
+       for (it = test.begin(); it != test.end(); ++it) 
+    {
+      cout << *it << " ";
+    }*/
+
+    
+    /*Test Set Union
+
+    set<string> s1 = parseStringToWords("Cc Aa Bb Dd");
+    set<string> s2 = parseStringToWords("Ee Bb Dd Ff");
+    set<string> onion = setUnion(s1, s2);
+    set<string>::iterator it;
+    cout << "begin ";
+    for (it = onion.begin(); it != onion.end(); ++it) {
+      cout << *it << " ";
+    }
+    cout << "end " << endl;
+    */
+
+    /*Test Set Intersection */
+
+    /*set<string> s1 = parseStringToWords("Cc Aa Bb Dd");
+    set<string> s2 = parseStringToWords("Ee Bb Dd Ff");
+    set<string> onion = setIntersection(s1, s2);
+    set<string>::iterator it;
+    cout << "begin ";
+    for (it = onion.begin(); it != onion.end(); ++it) {
+      cout << *it << " ";
+    }
+    cout << "end " << endl;*/
+    
+
+    
+
+    
+
+
     /****************
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
-
-
+    MyDataStore ds;
 
     // Instantiate the individual section and product parsers we want
     ProductSectionParser* productSectionParser = new ProductSectionParser;
@@ -98,19 +157,43 @@ int main(int argc, char* argv[])
                     ofile.close();
                 }
                 done = true;
-            }
-	    /* Add support for other commands here */
-
-
-
-
-            else {
+            } else if ( cmd == "ADD" ) {
+              string username;
+              int searchHitNumber;
+              ss >> username;
+              ss >> searchHitNumber;
+              if (ds.userExists(username) == true){
+                ds.addToCart(username, searchHitNumber, hits);
+              } else {
+                cout << "Invalid request" << endl;
+                cerr << "Invalid request" << endl;
+              }
+            } else if ( cmd == "VIEWCART" ) {
+              string username;
+              ss >> username;
+              if (ds.userExists(username) == true){
+                ds.viewCart(username);
+              } else {
+                cout << "Invalid username" << endl;
+                cerr << "Invalid username" << endl;
+              }
+            } else if ( cmd == "BUYCART" ) {
+              string username;
+              ss >> username;
+              
+              if (ds.userExists(username) == true){
+                ds.buyCart(username);
+              } else {
+                cout << "Invalid username" << endl;
+                cerr << "Invalid username" << endl;
+              }
+            } else {
                 cout << "Unknown command" << endl;
             }
         }
-
     }
     return 0;
+    
 }
 
 void displayProducts(vector<Product*>& hits)

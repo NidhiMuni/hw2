@@ -1,6 +1,8 @@
 #include "user.h"
 using namespace std;
 
+#include <iomanip>
+
 User::User() : name_("unknown"), balance_(0.0), type_(1)
 {
 
@@ -34,5 +36,6 @@ void User::deductAmount(double amt)
 
 void User::dump(std::ostream& os)
 {
-    os << name_ << " "  << balance_ << " " << type_ << endl;
+  //added setprecition
+    os << name_ << " "  << std::setprecision(2) << setiosflags(ios::fixed) << balance_ << " " << type_ << endl;
 }
